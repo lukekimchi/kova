@@ -33,20 +33,23 @@ function resizeWeeks(weeks, n) {
 
 const EMPTY = { marathonDate: null, startDate: null, activeWeek: 1, isDark: false, weeks: [] }
 
-export function usePlan() {
-  const [plan, setPlan] = useState(null)
-  const [loaded, setLoaded] = useState(false)
-  const planRef = useRef(null)
+export function usePlan(userId) {
+  const [plan, setPlan]       = useState(null)
+  const [loaded, setLoaded]   = useState(false)
+  const planRef               = useRef(null)
 
   useEffect(() => { planRef.current = plan }, [plan])
 
   useEffect(() => {
+    if (!userId) return
+
     supabase
       .from('plan')
       .select('*')
-      .eq('id', 'default')
+      .eq('user_id', userId)
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) console.error('usePlan load error:', error)
         const p = data
           ? {
               marathonDate: data.marathon_date ?? null,
@@ -60,9 +63,10 @@ export function usePlan() {
         planRef.current = p
         setLoaded(true)
       })
-  }, [])
+  }, [userId])
 
   const save = useCallback((updates) => {
+    if (!userId) return
     const prev = planRef.current
     const next = { ...prev, ...updates }
 
@@ -75,16 +79,21 @@ export function usePlan() {
     setPlan(next)
     planRef.current = next
 
-    supabase.from('plan').upsert({
-      id: 'default',
-      marathon_date: next.marathonDate,
-      start_date:    next.startDate,
-      active_week:   next.activeWeek,
-      is_dark:       next.isDark,
-      weeks:         next.weeks,
-      updated_at:    new Date().toISOString(),
-    })
-  }, [])
+    supabase
+      .from('plan')
+      .upsert({
+        user_id:       userId,
+        marathon_date: next.marathonDate,
+        start_date:    next.startDate,
+        active_week:   next.activeWeek,
+        is_dark:       next.isDark,
+        weeks:         next.weeks,
+        updated_at:    new Date().toISOString(),
+      })
+      .then(({ error }) => {
+        if (error) console.error('usePlan save error:', error)
+      })
+  }, [userId])
 
   return { plan, save, loaded }
 }

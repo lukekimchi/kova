@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -oP \"'[A-Za-z][^']{3,50}'\" /Users/lukekim/Local/Projects/kova/assets/index-rch32v7o.js)",
+      "Bash(git commit -m ' *)",
+      "Bash(git mv *)",
+      "Bash(git rm *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(git reset *)"
+    ]
+  }
+}

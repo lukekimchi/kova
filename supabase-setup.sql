@@ -1,20 +1,22 @@
--- Run this once in your Supabase project's SQL Editor
+-- Run this in your Supabase project's SQL Editor.
+-- If you ran the previous version, this replaces it.
 
-CREATE TABLE IF NOT EXISTS plan (
-  id           text        PRIMARY KEY DEFAULT 'default',
+DROP TABLE IF EXISTS plan;
+
+CREATE TABLE plan (
+  user_id       uuid        PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   marathon_date date,
-  start_date   date,
-  active_week  integer     DEFAULT 1,
-  is_dark      boolean     DEFAULT false,
-  weeks        jsonb       DEFAULT '[]'::jsonb,
-  updated_at   timestamptz DEFAULT now()
+  start_date    date,
+  active_week   integer     DEFAULT 1,
+  is_dark       boolean     DEFAULT false,
+  weeks         jsonb       DEFAULT '[]'::jsonb,
+  updated_at    timestamptz DEFAULT now()
 );
 
--- Seed the default row so upserts always work
-INSERT INTO plan (id) VALUES ('default') ON CONFLICT DO NOTHING;
-
--- Enable Row Level Security
 ALTER TABLE plan ENABLE ROW LEVEL SECURITY;
 
--- Allow full public access (single-user personal app, no auth needed)
-CREATE POLICY "public access" ON plan FOR ALL USING (true) WITH CHECK (true);
+-- Each user can only read and write their own plan row
+CREATE POLICY "own plan" ON plan
+  FOR ALL
+  USING      (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);

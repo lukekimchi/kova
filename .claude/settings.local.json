@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh auth *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(grep -v '^\"[a-zA-Z]$')",
+      "Bash(grep -vE '^[a-zA-Z]{1,3}$|^\\\\s*$')",
+      "Bash(grep -vE '^\\(function|var|let|const|return|if|else|switch|case|break|true|false|null|undefined|typeof|instanceof|new|this|class|extends|import|export|default|from|for|while|do|try|catch|finally|throw|delete|void|in|of|async|await\\)$')",
+      "Bash(grep -E '^[A-Z][a-zA-Z]+$|^[a-z][A-Z][a-zA-Z]+$')",
+      "Bash(grep -E '^[A-Z][A-Za-z ]+$')",
+      "Bash(grep -oP '`[A-Z][^`]{2,40}`' /Users/lukekim/Local/Projects/kova/assets/index-rch32v7o.js)",
+      "Bash(grep -oP '\"[A-Z][^\"]{2,40}\"' /Users/lukekim/Local/Projects/kova/assets/index-rch32v7o.js)"
+    ]
+  }
+}
