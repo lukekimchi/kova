@@ -29,10 +29,6 @@ export default function AuthScreen({ onSignIn, onSignUp }) {
     return (
       <div className="auth-screen">
         <div className="auth-card">
-          <div className="auth-logo">
-            <img src="/favicon.svg" alt="Kova" width={40} height={40} />
-            <span>kova</span>
-          </div>
           <p className="auth-confirm">Check your email to confirm your account, then log in.</p>
           <button className="btn btn-primary" onClick={() => { setConfirmed(false); setMode('login') }}>
             Back to log in
@@ -45,11 +41,6 @@ export default function AuthScreen({ onSignIn, onSignUp }) {
   return (
     <div className="auth-screen">
       <div className="auth-card">
-        <div className="auth-logo">
-          <img src="/favicon.svg" alt="Kova" width={40} height={40} />
-          <span>kova</span>
-        </div>
-
         <div className="auth-tabs">
           <button className={`auth-tab${mode === 'login' ? ' active' : ''}`} onClick={() => { setMode('login'); setError(null) }}>
             Log in

@@ -1,14 +1,19 @@
 import { DAYS, SESSION_TYPES } from '../types'
 
 export default function SessionItem({ session, onToggle, onEdit }) {
-  const { label, color, bg } = SESSION_TYPES[session.type] ?? SESSION_TYPES.rest
+  const { label, color } = SESSION_TYPES[session.type] ?? SESSION_TYPES.rest
 
   return (
-    <div className={`session-item${session.completed ? ' completed' : ''}`}>
-      <span className="session-day">{DAYS[session.day]}</span>
+    <div
+      className={`session-item${session.completed ? ' completed' : ''}`}
+      style={{ '--session-accent': color }}
+    >
       <button className="session-main" onClick={() => onEdit(session)}>
-        <span className="badge" style={{ color, background: bg }}>{label}</span>
-        {session.note && <span className="session-note">{session.note}</span>}
+        <span className="session-day">{DAYS[session.day]}</span>
+        <span className="session-info">
+          <span className="session-type">{label}</span>
+          {session.note && <span className="session-note">{session.note}</span>}
+        </span>
       </button>
       <button
         className={`check-btn${session.completed ? ' checked' : ''}`}

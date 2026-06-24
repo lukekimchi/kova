@@ -11,16 +11,25 @@ function weeksBetween(start, end) {
   return Math.max(0, Math.floor((new Date(end) - new Date(start)) / 604800000))
 }
 
+const DEFAULT_NOTES = {
+  easy:     '12km + 6x100 strides',
+  rest:     'RECOVER',
+  strength: 'GYM',
+}
+
 function makeWeek(idx) {
   return {
     id: idx + 1,
-    sessions: Array.from({ length: 7 }, (_, d) => ({
-      id: idx * 7 + d + 1,
-      day: d,
-      type: DEFAULT_PATTERNS[idx % 2][d],
-      note: '',
-      completed: false,
-    })),
+    sessions: Array.from({ length: 7 }, (_, d) => {
+      const type = DEFAULT_PATTERNS[idx % 2][d]
+      return {
+        id: idx * 7 + d + 1,
+        day: d,
+        type,
+        note: DEFAULT_NOTES[type] ?? '',
+        completed: false,
+      }
+    }),
   }
 }
 

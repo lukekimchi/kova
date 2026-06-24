@@ -33,10 +33,6 @@ export default function App() {
   return (
     <div className={`app${plan.isDark ? ' dark' : ''}`}>
       <header className="header">
-        <div className="header-logo">
-          <img src="/favicon.svg" alt="" width={22} height={22} />
-          <span>kova</span>
-        </div>
         <div className="header-actions">
           <button className="icon-btn" onClick={() => setShowSettings(true)} aria-label="Settings">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
