@@ -1,0 +1,1 @@
+ALTER TABLE plan ADD COLUMN IF NOT EXISTS palette text DEFAULT 'volt';
