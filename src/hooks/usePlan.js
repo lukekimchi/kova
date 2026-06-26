@@ -40,7 +40,10 @@ function resizeWeeks(weeks, n) {
   return weeks.slice(0, n)
 }
 
-const EMPTY = { marathonDate: null, startDate: null, activeWeek: 1, isDark: false, weeks: [] }
+const VALID_PALETTES = new Set(['frost', 'ocean', 'custom'])
+function resolvePalette(p) { return VALID_PALETTES.has(p) ? p : 'frost' }
+
+const EMPTY = { marathonDate: null, startDate: null, activeWeek: 1, isDark: false, palette: 'frost', customPalette: {}, weightTracking: false, weights: {}, weeks: [] }
 
 export function usePlan(userId) {
   const [plan, setPlan]       = useState(null)
@@ -65,7 +68,11 @@ export function usePlan(userId) {
               startDate:    data.start_date    ?? null,
               activeWeek:   data.active_week   ?? 1,
               isDark:       data.is_dark       ?? false,
-              weeks:        data.weeks         ?? [],
+              palette:         resolvePalette(data.palette),
+              customPalette:   data.custom_palette   ?? {},
+              weightTracking:  data.weight_tracking  ?? false,
+              weights:         data.weights          ?? {},
+              weeks:           data.weeks            ?? [],
             }
           : { ...EMPTY }
         setPlan(p)
@@ -95,8 +102,12 @@ export function usePlan(userId) {
         marathon_date: next.marathonDate,
         start_date:    next.startDate,
         active_week:   next.activeWeek,
-        is_dark:       next.isDark,
-        weeks:         next.weeks,
+        is_dark:         next.isDark,
+        palette:         next.palette,
+        custom_palette:  next.customPalette,
+        weight_tracking: next.weightTracking,
+        weights:         next.weights,
+        weeks:           next.weeks,
         updated_at:    new Date().toISOString(),
       })
       .then(({ error }) => {

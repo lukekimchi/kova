@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { SESSION_TYPES } from '../types'
 
-export default function EditModal({ session, onSave, onClose }) {
+export default function EditModal({ session, canRemove, onSave, onRemove, onClose }) {
   const [type, setType] = useState(session.type)
   const [note, setNote] = useState(session.note)
 
   function handleSave() {
     onSave({ ...session, type, note })
-    onClose()
   }
 
   return (
@@ -41,6 +40,9 @@ export default function EditModal({ session, onSave, onClose }) {
           rows={3}
         />
         <button className="btn btn-primary" onClick={handleSave}>Save</button>
+        {canRemove && (
+          <button className="btn btn-danger" onClick={onRemove}>Remove session</button>
+        )}
       </div>
     </div>
   )

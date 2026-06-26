@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from './hooks/useAuth'
 import { usePlan } from './hooks/usePlan'
 import AuthScreen from './components/AuthScreen'
 import WeekDetail from './components/WeekDetail'
 import WeekList from './components/WeekList'
+import WeightView from './components/WeightView'
 import SettingsModal from './components/SettingsModal'
 import './App.css'
 
@@ -12,6 +13,11 @@ export default function App() {
   const { plan, save, loaded } = usePlan(user?.id)
   const [tab, setTab] = useState('week')
   const [showSettings, setShowSettings] = useState(false)
+
+  // Drop weight tab if tracking is turned off
+  useEffect(() => {
+    if (plan && !plan.weightTracking && tab === 'weight') setTab('week')
+  }, [plan?.weightTracking])
 
   if (authLoading) {
     return <div className="loading"><div className="spinner" /></div>
@@ -57,12 +63,19 @@ export default function App() {
         <button className={`tab${tab === 'plan' ? ' active' : ''}`} onClick={() => setTab('plan')}>
           Full plan
         </button>
+        {plan.weightTracking && (
+          <button className={`tab${tab === 'weight' ? ' active' : ''}`} onClick={() => setTab('weight')}>
+            Weight
+          </button>
+        )}
       </nav>
 
       <main className="main">
         {tab === 'week'
           ? <WeekDetail plan={plan} totalWeeks={plan.weeks.length} onSave={save} />
-          : <WeekList plan={plan} onWeekClick={goToWeek} />
+          : tab === 'plan'
+          ? <WeekList plan={plan} onWeekClick={goToWeek} />
+          : <WeightView plan={plan} totalWeeks={plan.weeks.length} onSave={save} />
         }
       </main>
 
