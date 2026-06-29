@@ -317,17 +317,19 @@ input, textarea { font: inherit; }
   inset: 0;
   background: rgba(0,0,0,0.6);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   z-index: 100;
-  padding-bottom: env(safe-area-inset-bottom);
+  padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom);
 }
 .modal {
   width: 100%;
+  max-width: 480px;
   background: var(--bg);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
-  border-top: 1px solid var(--border);
-  padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+  border: 1px solid var(--border);
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
