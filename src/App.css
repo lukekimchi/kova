@@ -69,7 +69,6 @@ input, textarea { font: inherit; }
   flex-direction: column;
   background: transparent;
   color: var(--text);
-  padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -91,11 +90,11 @@ input, textarea { font: inherit; }
 
 /* ---- Header ---- */
 .header {
-  height: var(--header-h);
+  height: calc(var(--header-h) + env(safe-area-inset-top));
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: env(safe-area-inset-top) 16px 0;
   border-bottom: 1px solid var(--border);
   background: var(--bg);
   backdrop-filter: blur(24px);
@@ -120,7 +119,7 @@ input, textarea { font: inherit; }
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   position: sticky;
-  top: var(--header-h);
+  top: calc(var(--header-h) + env(safe-area-inset-top));
   z-index: 10;
 }
 .tab {
