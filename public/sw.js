@@ -1,6 +1,5 @@
 const CACHE = 'kova-v2'
-const PRECACHE = ['/', '/manifest.json', '/favicon.svg', '/icons.svg']
-
+const PRECACHE = ['/', '/manifest.json']
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE)))
   self.skipWaiting()
