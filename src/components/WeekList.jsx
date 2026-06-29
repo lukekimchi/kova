@@ -1,4 +1,6 @@
-import { DAYS, SESSION_TYPES, getPaletteColors } from '../types'
+import { useState } from 'react'
+import { DAYS, SESSION_TYPES } from '../types'
+import BulkEditModal from './BulkEditModal'
 
 function weekStartDate(startDate, weekId) {
   if (!startDate) return null
@@ -22,8 +24,9 @@ function weekAvg(startDate, weekId, weights) {
 const fmtWC  = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
 const fmtMon = d => d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })
 
-export default function WeekList({ plan, onWeekClick }) {
-  const { weeks, activeWeek, startDate, palette, weightTracking, weights } = plan
+export default function WeekList({ plan, onWeekClick, onSave }) {
+  const [bulkEdit, setBulkEdit] = useState(false)
+  const { weeks, activeWeek, startDate, weightTracking, weights } = plan
 
   if (!weeks.length) {
     return <div className="empty-state"><p>Set both dates to calculate weeks</p></div>
@@ -42,7 +45,14 @@ export default function WeekList({ plan, onWeekClick }) {
   })
 
   return (
+    <>
     <div className={`cal${weightTracking ? ' cal--weight' : ''}`}>
+      <div className="cal-toolbar">
+        <button className="cal-bulk-btn" onClick={() => setBulkEdit(true)}>
+          Bulk edit_
+        </button>
+      </div>
+
       <div className="cal-head">
         <div className="cal-head-spacer" />
         {DAYS.map(d => (
@@ -81,19 +91,18 @@ export default function WeekList({ plan, onWeekClick }) {
             {byDay.map((sessions, i) => {
               const primary  = sessions[0]
               const isDouble = sessions.length > 1
+              const isDone   = sessions.length > 0 && sessions.every(s => s.completed)
 
               if (!primary) {
                 return <span key={i} className="cal-cell cal-cell--empty" />
               }
 
-              const c      = getPaletteColors(palette ?? 'frost', primary.type, plan.customPalette)
-              const isDone = sessions.every(s => s.completed)
+              const isRest = primary.type === 'rest'
 
               return (
                 <span
                   key={i}
-                  className={`cal-cell${isDone ? ' cal-cell--done' : ''}`}
-                  style={{ background: c.bold, color: c.text }}
+                  className={`cal-cell${isDone ? ' cal-cell--done' : ''}${isRest ? ' cal-cell--rest' : ''}`}
                 >
                   <span className="cal-cell-type">
                     {SESSION_TYPES[primary.type]?.label[0] ?? '?'}
@@ -112,5 +121,14 @@ export default function WeekList({ plan, onWeekClick }) {
         )
       })}
     </div>
+
+    {bulkEdit && (
+      <BulkEditModal
+        plan={plan}
+        onSave={updates => { onSave(updates); setBulkEdit(false) }}
+        onClose={() => setBulkEdit(false)}
+      />
+    )}
+    </>
   )
 }

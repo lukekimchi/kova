@@ -41,6 +41,11 @@ export default function AuthScreen({ onSignIn, onSignUp }) {
   return (
     <div className="auth-screen">
       <div className="auth-card">
+        <div className="auth-brand">
+          <p className="auth-wordmark">KO_VA.</p>
+          <p className="auth-tagline">Marathon Training.</p>
+        </div>
+
         <div className="auth-tabs">
           <button className={`auth-tab${mode === 'login' ? ' active' : ''}`} onClick={() => { setMode('login'); setError(null) }}>
             Log in

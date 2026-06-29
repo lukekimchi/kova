@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import EditModal from './EditModal'
 import AddDoubleModal from './AddDoubleModal'
-import { DAYS, SESSION_TYPES, getPaletteColors } from '../types'
+import { DAYS, SESSION_TYPES } from '../types'
 
 export default function WeekDetail({ plan, totalWeeks, onSave }) {
-  const [editing, setEditing] = useState(null) // { session, canRemove }
+  const [editing, setEditing] = useState(null)
   const [addingDouble, setAddingDouble] = useState(false)
   const { activeWeek, weeks } = plan
   const week = weeks[activeWeek - 1]
@@ -54,8 +54,7 @@ export default function WeekDetail({ plan, totalWeeks, onSave }) {
   }
 
   const dayMap = DAYS.map((_, i) => week.sessions.filter(s => s.day === i))
-  const allDone = week.sessions.every(s => s.completed)
-  const paletteId = plan.palette ?? 'frost'
+  const allDone = week.sessions.length > 0 && week.sessions.every(s => s.completed)
 
   const weekStart = plan.startDate
     ? (() => { const d = new Date(plan.startDate + 'T00:00:00'); d.setDate(d.getDate() + (activeWeek - 1) * 7); return d })()
@@ -72,9 +71,9 @@ export default function WeekDetail({ plan, totalWeeks, onSave }) {
           </svg>
         </button>
         <div className="week-label">
-          <span className="week-title">Week {activeWeek} of {totalWeeks}</span>
-          {weekStart && <span className="week-dates">{fmt(weekStart)} – {fmt(weekEnd)}</span>}
-          {allDone && <span className="done-badge">Done</span>}
+          <span className="week-title">WK_{String(activeWeek).padStart(2, '0')}.</span>
+          <span className="week-of">of {totalWeeks}{weekStart && ` · ${fmt(weekStart)} – ${fmt(weekEnd)}`}</span>
+          {allDone && <span className="done-badge">Done.</span>}
         </div>
         <button className="icon-btn" onClick={nextWeek} disabled={activeWeek === totalWeeks}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -83,82 +82,36 @@ export default function WeekDetail({ plan, totalWeeks, onSave }) {
         </button>
       </div>
 
-      <div className="week-grid">
+      <div className="wlist">
         {DAYS.map((dayLabel, i) => {
           const sessions = dayMap[i]
           if (sessions.length === 0) return null
 
-          const isDone = sessions.every(s => s.completed)
-
-          if (sessions.length === 1) {
-            const session = sessions[0]
-            const t = SESSION_TYPES[session.type] ?? SESSION_TYPES.rest
-            const c = getPaletteColors(paletteId, session.type, plan.customPalette)
-            return (
-              <div
-                key={i}
-                className={`wcard${isDone ? ' wcard--done' : ''}`}
-                style={{ background: c.bold, color: c.text }}
-              >
-                <div className="wcard-top">
-                  <span className="wcard-day">{dayLabel.toUpperCase()}</span>
-                  <button
-                    className="wcard-check"
-                    onClick={() => toggleSession(session)}
-                    aria-label={session.completed ? 'Mark incomplete' : 'Mark complete'}
-                  >
-                    {session.completed ? (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    ) : (
-                      <span className="wcard-circle" />
-                    )}
-                  </button>
-                </div>
-                <button
-                  className="wcard-main"
-                  onClick={() => setEditing({ session, canRemove: false })}
-                >
-                  <span className="wcard-type">{t.label}</span>
-                  {session.note && <span className="wcard-note">{session.note}</span>}
-                </button>
-              </div>
-            )
-          }
-
-          // Double day
           return (
-            <div key={i} className={`wcard wcard--double${isDone ? ' wcard--done' : ''}`}>
-              <div className="wcard-day-header">
-                <span className="wcard-day">{dayLabel.toUpperCase()}</span>
-              </div>
+            <div key={i} className="wentry">
+              <span className="wentry-day">{dayLabel}_</span>
               {sessions.map((session, si) => {
                 const t = SESSION_TYPES[session.type] ?? SESSION_TYPES.rest
-                const c = getPaletteColors(paletteId, session.type, plan.customPalette)
                 return (
-                  <div
-                    key={session.id}
-                    className={`wcard-half${session.completed ? ' wcard-half--done' : ''}`}
-                    style={{ background: c.bold, color: c.text }}
-                  >
+                  <div key={session.id} className={`wentry-row${session.completed ? ' wentry-row--done' : ''}`}>
                     <button
-                      className="wcard-main"
+                      className="wentry-main"
                       onClick={() => setEditing({ session, canRemove: si > 0 })}
                     >
-                      <span className="wcard-type">{t.label}</span>
+                      <span className="wentry-type">{t.label}.</span>
+                      {session.note && <span className="wentry-note">{session.note}</span>}
                     </button>
                     <button
-                      className="wcard-check"
+                      className="wentry-check"
                       onClick={() => toggleSession(session)}
                       aria-label={session.completed ? 'Mark incomplete' : 'Mark complete'}
                     >
                       {session.completed ? (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                           <polyline points="20 6 9 17 4 12" />
                         </svg>
                       ) : (
-                        <span className="wcard-circle" />
+                        <span className="wentry-circle" />
                       )}
                     </button>
                   </div>
@@ -168,9 +121,8 @@ export default function WeekDetail({ plan, totalWeeks, onSave }) {
           )
         })}
 
-        <button className="wcard wcard--add" onClick={() => setAddingDouble(true)}>
-          <span className="wcard-plus">+</span>
-          <span className="wcard-add-label">Add double</span>
+        <button className="wentry-add" onClick={() => setAddingDouble(true)}>
+          + Add double
         </button>
       </div>
 

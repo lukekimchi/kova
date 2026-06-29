@@ -21,11 +21,10 @@ export default function EditModal({ session, canRemove, onSave, onRemove, onClos
           </button>
         </div>
         <div className="type-grid">
-          {Object.entries(SESSION_TYPES).map(([key, { label, color, bg }]) => (
+          {Object.entries(SESSION_TYPES).map(([key, { label }]) => (
             <button
               key={key}
               className={`type-btn${type === key ? ' selected' : ''}`}
-              style={type === key ? { background: bg, color, borderColor: color } : {}}
               onClick={() => setType(key)}
             >
               {label}
@@ -34,7 +33,7 @@ export default function EditModal({ session, canRemove, onSave, onRemove, onClos
         </div>
         <textarea
           className="note-input"
-          placeholder="Notes (optional)"
+          placeholder="Setup (optional)"
           value={note}
           onChange={e => setNote(e.target.value)}
           rows={3}

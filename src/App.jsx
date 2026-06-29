@@ -39,6 +39,7 @@ export default function App() {
   return (
     <div className={`app${plan.isDark ? ' dark' : ''}`}>
       <header className="header">
+        <span className="wordmark">KO_VA.</span>
         <div className="header-actions">
           <button className="icon-btn" onClick={() => setShowSettings(true)} aria-label="Settings">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -58,14 +59,14 @@ export default function App() {
 
       <nav className="tabs">
         <button className={`tab${tab === 'week' ? ' active' : ''}`} onClick={() => setTab('week')}>
-          This week
+          Week.
         </button>
         <button className={`tab${tab === 'plan' ? ' active' : ''}`} onClick={() => setTab('plan')}>
-          Full plan
+          Plan.
         </button>
         {plan.weightTracking && (
           <button className={`tab${tab === 'weight' ? ' active' : ''}`} onClick={() => setTab('weight')}>
-            Weight
+            Weight.
           </button>
         )}
       </nav>
@@ -74,7 +75,7 @@ export default function App() {
         {tab === 'week'
           ? <WeekDetail plan={plan} totalWeeks={plan.weeks.length} onSave={save} />
           : tab === 'plan'
-          ? <WeekList plan={plan} onWeekClick={goToWeek} />
+          ? <WeekList plan={plan} onWeekClick={goToWeek} onSave={save} />
           : <WeightView plan={plan} totalWeeks={plan.weeks.length} onSave={save} />
         }
       </main>
